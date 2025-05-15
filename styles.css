@@ -1,0 +1,171 @@
+body {
+    background-color: #1a4d2e;
+    font-family: 'Arial', sans-serif;
+    overflow-x: hidden;
+    position: relative;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+/* Loading Screen */
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0c2718;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease-out;
+}
+
+.loading-logo {
+    width: 200px;
+    height: auto;
+    margin-bottom: 30px;
+}
+
+.loading-bar-container {
+    width: 80%;
+    max-width: 400px;
+    height: 20px;
+    background-color: #0a1f12;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+    margin-bottom: 15px;
+}
+
+.loading-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(to right, #4ade80, #22c55e);
+    border-radius: 10px;
+    transition: width 0.5s ease-in-out;
+    box-shadow: 0 0 15px #4ade80;
+}
+
+.loading-text {
+    color: #4ade80;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+}
+
+/* Snow Animation */
+.snowflake {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    filter: drop-shadow(0 0 10px white);
+    animation: fall linear forwards;
+    z-index: 1;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(100vh);
+    }
+}
+
+/* Glowing Border for Images */
+.glow-border {
+    box-shadow: 0 0 15px #4ade80, 0 0 25px #4ade80;
+    border: 2px solid #4ade80;
+    border-radius: 10px;
+}
+
+/* Shiny Button Effect */
+.shiny-button {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.shiny-button:before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+    transform: rotate(45deg);
+    animation: shine 3s infinite;
+}
+
+@keyframes shine {
+    0% {
+        left: -50%;
+        top: -50%;
+    }
+    100% {
+        left: 150%;
+        top: 150%;
+    }
+}
+
+/* Progress Bar Animation */
+@keyframes progressPulse {
+    0% { box-shadow: 0 0 5px #4ade80; }
+    50% { box-shadow: 0 0 15px #4ade80; }
+    100% { box-shadow: 0 0 5px #4ade80; }
+}
+
+.progress-bar {
+    animation: progressPulse 2s infinite;
+}
+
+/* Horizontal Line */
+.divider {
+    height: 2px;
+    background: linear-gradient(to right, transparent, #4ade80, transparent);
+    margin: 20px 0;
+    box-shadow: 0 0 10px #4ade80;
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+    .game-box {
+        padding: 12px;
+    }
+    
+    .game-image {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .loading-logo {
+        width: 150px;
+    }
+    
+    .loading-bar-container {
+        width: 90%;
+        height: 15px;
+    }
+}
+
+/* Logo container */
+.logo-container {
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.logo-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
+}
+
+/* Hide main content initially */
+#main-content {
+    display: none;
+}

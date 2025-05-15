@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahjong Ways Selection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <img src="https://d1qde0807mi10y.cloudfront.net/s2qmxz%2Fpreview%2F67181570%2Fmain_large.gif?response-content-disposition=inline%3Bfilename%3D%22main_large.gif%22%3B&response-content-type=image%2Fgif&Expires=1747279544&Signature=ZiwkMxyArkolMwZyjzRWS75AmxxkomZTye~~vJWii7A-WOuqLh7Nyy1xi4QOIAL~CKoyENUSVHjvVdrU7UHrob7BBB0-sgiTun0TRFcoDQJBRXk5Wcr7bAIvCLovzSyG24KPmNGeXIEO1-YoZ0Aye2EVkdbiAhf3ZPOwkXUnBMXmVpDBHbQXB6dcn9vCCg~JWmjfWh72X3l2wZU6nnzB7jCyDKhsgjx4r3qjoqqHawWjgEnDO0Iw04Jp3Q3FoU7ThumpsjZHgfPYALT0B5cEpdOYszNYwSn1~U2M-O5ytRjVW~mU5KqLdR2AFqO9TMlQp15fG4RvAth2JnWYOsaXKg__&Key-Pair-Id=APKAJT5WQLLEOADKLHBQ" alt="Loading Logo" class="loading-logo">
+        <div class="loading-bar-container">
+            <div id="loading-bar" class="loading-bar"></div>
+        </div>
+        <div id="loading-text" class="loading-text">Loading... 0%</div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content" class="text-white p-2 sm:p-4">
+        <!-- Snow Animation Container -->
+        <div id="snow-container"></div>
+
+        <!-- Main Content Container -->
+        <div class="max-w-4xl mx-auto relative z-10">
+            <!-- Header with Logo (now GIF image) -->
+            <header class="flex justify-center items-center mb-4 sm:mb-6 pt-2 sm:pt-4">
+                <div class="logo-container">
+                    <img src="https://d1qde0807mi10y.cloudfront.net/s2qmxz%2Fpreview%2F67181570%2Fmain_large.gif?response-content-disposition=inline%3Bfilename%3D%22main_large.gif%22%3B&response-content-type=image%2Fgif&Expires=1747279544&Signature=ZiwkMxyArkolMwZyjzRWS75AmxxkomZTye~~vJWii7A-WOuqLh7Nyy1xi4QOIAL~CKoyENUSVHjvVdrU7UHrob7BBB0-sgiTun0TRFcoDQJBRXk5Wcr7bAIvCLovzSyG24KPmNGeXIEO1-YoZ0Aye2EVkdbiAhf3ZPOwkXUnBMXmVpDBHbQXB6dcn9vCCg~JWmjfWh72X3l2wZU6nnzB7jCyDKhsgjx4r3qjoqqHawWjgEnDO0Iw04Jp3Q3FoU7ThumpsjZHgfPYALT0B5cEpdOYszNYwSn1~U2M-O5ytRjVW~mU5KqLdR2AFqO9TMlQp15fG4RvAth2JnWYOsaXKg__&Key-Pair-Id=APKAJT5WQLLEOADKLHBQ" alt="Logo" class="logo-image">
+                </div>
+            </header>
+
+            <!-- Divider -->
+            <div class="divider"></div>
+
+            <!-- Banner -->
+            <div class="w-full flex justify-center mb-4 sm:mb-8">
+                <img src="https://dgqh380xariug.cloudfront.net/f4ckxz%2Fpreview%2F67181484%2Fmain_large.jpg?response-content-disposition=inline%3Bfilename%3D%22main_large.jpg%22%3B&response-content-type=image%2Fjpeg&Expires=1747279035&Signature=YzdTnYz1aHUp~~qXur~n~~n2MAZYySJtyomX8r~YbicqChxdziTGoURX~AKZMl6Kt0sm4Xnn23R4dyJkpS0kpCw5R08nXRa9GWZf1xLWZioArEKAOOjhk0~OueQ3E1h-NcsMBHLXW~8O7XjViUwMyDxreKzvatlo~GzGE6IJAKt0-ocR-hotLpskb6OSUvRxQg3C4DwBdDLG1cRJvH5fryTS1U0xOk5dsiKh9QbDxj8iDeHZSSPewCerKXKlt1nkIRKpCwWaOSFi2~6kmu7rnN4r7yzACOmJTD~kAYQ678p6cp5zb0AtI77EU~rhnNSR7T69acd5~Lq9IOmgA9zUTg__&Key-Pair-Id=APKAJT5WQLLEOADKLHBQ" alt="Banner" class="w-full rounded-lg shadow-lg">
+            </div>
+
+            <!-- Game Selection Boxes -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 mb-6">
+                <!-- Mahjong Ways 1 -->
+                <div class="game-box bg-green-900/70 p-4 sm:p-6 rounded-xl shadow-lg border border-green-500">
+                    <div class="flex justify-center mb-3 sm:mb-4">
+                        <img src="https://snapy.photo/Talas89/Scatter_Ijo.gif" alt="Mahjong Ways 1" class="game-image w-32 h-32 sm:w-48 sm:h-48 object-contain glow-border">
+                    </div>
+                    <h2 class="text-xl sm:text-2xl font-bold text-center text-green-300 mb-2">New Mahjong Ways 1</h2>
+                    <div class="mb-2">
+                        <div class="flex justify-between mb-1">
+                            <span>RTP:</span>
+                            <span id="rtp1-value" class="font-bold text-yellow-300">92%</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-3 sm:h-4 relative overflow-hidden">
+                            <div id="rtp1-bar" class="bg-green-500 h-full rounded-full progress-bar" style="width: 92%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mahjong Ways 2 -->
+                <div class="game-box bg-green-900/70 p-4 sm:p-6 rounded-xl shadow-lg border border-green-500">
+                    <div class="flex justify-center mb-3 sm:mb-4">
+                        <img src="https://snapy.photo/Talas89/Scatter_Ijo.gif" alt="Mahjong Ways 2" class="game-image w-32 h-32 sm:w-48 sm:h-48 object-contain glow-border">
+                    </div>
+                    <h2 class="text-xl sm:text-2xl font-bold text-center text-green-300 mb-2">New Mahjong Ways 2</h2>
+                    <div class="mb-2">
+                        <div class="flex justify-between mb-1">
+                            <span>RTP:</span>
+                            <span id="rtp2-value" class="font-bold text-yellow-300">88%</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-3 sm:h-4 relative overflow-hidden">
+                            <div id="rtp2-bar" class="bg-green-500 h-full rounded-full progress-bar" style="width: 88%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="divider"></div>
+
+            <!-- Form Section -->
+            <div class="mx-auto bg-green-900/70 p-4 sm:p-6 rounded-xl shadow-lg border border-green-500 mb-6">
+                <div class="mb-4">
+                    <label class="block text-green-300 mb-2">Username Talas89:</label>
+                    <input type="text" value="Talas89" class="w-full bg-green-800 border border-green-500 rounded p-2 text-white" readonly>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-green-300 mb-2">Select Game:</label>
+                    <div class="flex flex-col sm:flex-row gap-2 sm:gap-4">
+                        <label class="flex items-center">
+                            <input type="radio" name="game" value="mahjong1" class="mr-2" checked>
+                            <span>New Game Mahjong 1</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="game" value="mahjong2" class="mr-2">
+                            <span>New Game Mahjong 2</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="flex justify-center">
+                    <button id="process-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg shiny-button text-lg">
+                        PROSES
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
