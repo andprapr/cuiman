@@ -497,211 +497,49 @@ Pinjaman|0</textarea>
       form.dispatchEvent(new Event('submit'));
     });
 
-    // PDF Download
+    // PDF Download with html2canvas and jsPDF for exact design
     document.getElementById('downloadPdfButton').addEventListener('click', async () => {
+      const slip = document.getElementById('slip');
+      // Dynamically load html2canvas
+      if (!window.html2canvas) {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+          script.onload = resolve;
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+      }
+      const canvas = await html2canvas(slip, {
+        scale: 2,
+        backgroundColor: '#fff',
+        useCORS: true,
+      });
+      const imgData = canvas.toDataURL('image/png');
       const { jsPDF } = window.jspdf;
-      const doc = new jsPDF({
+      const pdf = new jsPDF({
         unit: 'pt',
         format: 'a4',
       });
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
 
-      const marginLeft = 40;
-      let y = 40;
-      const lineHeight = 18;
-      const pageWidth = doc.internal.pageSize.getWidth();
+      // Calculate image dimensions to fit width with aspect ratio
+      const imgProps = pdf.getImageProperties(imgData);
+      const imgWidth = pdfWidth - 80; // margin 40 left and right
+      const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
 
-      // Draw logo if exists
-      const logoImg = document.getElementById('logoInSlip');
-      if (logoImg && logoImg.src) {
-        try {
-          // Draw image max width 80pt, max height 60pt
-          const imgProps = await new Promise((resolve) => {
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            img.onload = () => {
-              resolve({ width: img.width, height: img.height });
-            };
-            img.onerror = () => {
-              resolve(null);
-            };
-            img.src = logoImg.src;
-          });
-          if (imgProps) {
-            let imgWidth = 80;
-            let imgHeight = (imgProps.height / imgProps.width) * imgWidth;
-            if (imgHeight > 60) {
-              imgHeight = 60;
-              imgWidth = (imgProps.width / imgProps.height) * imgHeight;
-            }
-            doc.addImage(logoImg.src, 'PNG', marginLeft, y, imgWidth, imgHeight);
-          }
-        } catch {
-          // ignore image errors
-        }
+      let positionY = 40;
+
+      // If image height is bigger than page height, scale down
+      if (imgHeight > pdfHeight - 80) {
+        const scale = (pdfHeight - 80) / imgHeight;
+        pdf.addImage(imgData, 'PNG', 40, positionY, imgWidth * scale, imgHeight * scale);
+      } else {
+        pdf.addImage(imgData, 'PNG', 40, positionY, imgWidth, imgHeight);
       }
 
-      // Company info text start X (after logo)
-      const infoX = marginLeft + 90;
-      const infoYStart = y + 5;
-      doc.setFont('Roboto Mono', 'normal');
-      doc.setFontSize(9);
-      doc.text(document.getElementById('companyName2Display').textContent, infoX, infoYStart);
-      doc.text(document.getElementById('companyAddress1Display').textContent, infoX, infoYStart + lineHeight);
-      doc.text(document.getElementById('companyAddress2Display').textContent, infoX, infoYStart + lineHeight * 2);
-
-      // Confidential text right aligned
-      doc.setFontSize(14);
-      doc.setFont('Roboto Mono', 'bold');
-      const confidentialText = document.getElementById('confidentialDisplay').textContent;
-      const confidentialWidth = doc.getTextWidth(confidentialText);
-      doc.text(confidentialText, pageWidth - marginLeft - confidentialWidth, y + 15);
-
-      y += 80;
-
-      doc.setFontSize(10);
-      doc.setFont('Roboto Mono', 'normal');
-
-      // Info and bank section
-      const leftInfoX = marginLeft;
-      const rightInfoX = pageWidth - marginLeft - 200;
-      const lineGap = 16;
-
-      const leftInfo = [
-        `NIK : ${document.getElementById('nikDisplay').textContent}`,
-        `Nama : ${document.getElementById('nameDisplay').textContent}`,
-        `Jabatan : ${document.getElementById('positionDisplay').textContent}`,
-      ];
-      const rightInfo = [
-        `Bank : ${document.getElementById('bankDisplay').textContent}`,
-        `Transfer : ${document.getElementById('transferDisplay').textContent}`,
-        `Periode : ${document.getElementById('periodDisplay').textContent}`,
-      ];
-
-      leftInfo.forEach((text, i) => {
-        doc.text(text, leftInfoX, y + i * lineGap);
-      });
-      rightInfo.forEach((text, i) => {
-        doc.text(text, rightInfoX, y + i * lineGap);
-      });
-
-      y += leftInfo.length * lineGap + 10;
-
-      // Horizontal line
-      doc.setDrawColor(0);
-      doc.setLineWidth(0.5);
-      doc.line(marginLeft, y, pageWidth - marginLeft, y);
-      y += 10;
-
-      // Table header
-      doc.setFont('Roboto Mono', 'bold');
-      const col1X = marginLeft + 5;
-      const col2X = marginLeft + 260;
-      const col3X = marginLeft + 460;
-      doc.text('INFORMASI', col1X, y);
-      doc.text('PENDAPATAN', col2X, y);
-      doc.text('PENGURANGAN', col3X, y);
-      y += lineHeight;
-
-      // Table content
-      doc.setFont('Roboto Mono', 'normal');
-      const info1 = document.getElementById('info1Display').textContent;
-      const info2 = document.getElementById('info2Display').textContent;
-      doc.text(info1, col1X, y);
-      doc.text(info2, col1X, y + lineHeight);
-      y += lineHeight * 2;
-
-      // Income and deduction lines
-      const incomeLines = Array.from(document.getElementById('incomeList').children);
-      const deductionLines = Array.from(document.getElementById('deductionList').children);
-      const maxLines = Math.max(incomeLines.length, deductionLines.length);
-
-      for (let i = 0; i < maxLines; i++) {
-        if (i < incomeLines.length) {
-          const label = incomeLines[i].children[0].textContent;
-          const value = incomeLines[i].children[1].textContent;
-          doc.text(label, col2X, y);
-          const valWidth = doc.getTextWidth(value);
-          doc.text(value, col2X + 180 - valWidth - 5, y);
-        }
-        if (i < deductionLines.length) {
-          const label = deductionLines[i].children[0].textContent;
-          const value = deductionLines[i].children[1].textContent;
-          doc.text(label, col3X, y);
-          const valWidth = doc.getTextWidth(value);
-          doc.text(value, col3X + 180 - valWidth - 5, y);
-        }
-        y += lineHeight;
-        if (y > doc.internal.pageSize.getHeight() - 80) {
-          doc.addPage();
-          y = 40;
-        }
-      }
-
-      y += 10;
-      doc.setLineWidth(0.5);
-      doc.line(marginLeft, y, pageWidth - marginLeft, y);
-      y += 10;
-
-      // Totals row
-      doc.setFont('Roboto Mono', 'bold');
-      const totalPendapatanLabel = 'TOTAL PENDAPATAN';
-      const totalPendapatanValue = document.getElementById('totalIncomeDisplay').textContent;
-      const totalPenguranganLabel = 'TOTAL PENGURANGAN';
-      const totalPenguranganValue = document.getElementById('totalDeductionDisplay').textContent;
-
-      // Draw boxes for totals as in example
-      const boxHeight = 20;
-      const boxWidth = 120;
-      const boxY = y - 15;
-
-      // Left label box
-      doc.rect(marginLeft, boxY, 160, boxHeight);
-      doc.text(totalPendapatanLabel, marginLeft + 80 - doc.getTextWidth(totalPendapatanLabel)/2, y);
-
-      // Left value box
-      doc.rect(marginLeft + 160, boxY, boxWidth, boxHeight);
-      const valWidth1 = doc.getTextWidth(totalPendapatanValue);
-      doc.text(totalPendapatanValue, marginLeft + 160 + boxWidth - 10 - valWidth1, y);
-
-      // Right label box
-      const rightLabelX = marginLeft + 160 + boxWidth + 20;
-      doc.text(totalPenguranganLabel, rightLabelX + 90 - doc.getTextWidth(totalPenguranganLabel)/2, y);
-
-      // Right value box
-      const rightValueX = rightLabelX + 180;
-      doc.rect(rightValueX, boxY, boxWidth, boxHeight);
-      const valWidth2 = doc.getTextWidth(totalPenguranganValue);
-      doc.text(totalPenguranganValue, rightValueX + boxWidth - 10 - valWidth2, y);
-
-      y += boxHeight + 20;
-
-      // Pendapatan Bersih row
-      const netLabel = 'PENDAPATAN BERSIH';
-      const netValue = document.getElementById('netIncomeDisplay').textContent;
-
-      const netLabelWidth = doc.getTextWidth(netLabel);
-      const netBoxWidth = 120;
-      const netBoxHeight = 20;
-
-      // Label right aligned before box
-      const netLabelX = pageWidth - marginLeft - netBoxWidth - 20 - netLabelWidth;
-      doc.text(netLabel, netLabelX, y);
-
-      // Box for net income
-      const netBoxX = pageWidth - marginLeft - netBoxWidth;
-      doc.rect(netBoxX, y - netBoxHeight + 5, netBoxWidth, netBoxHeight);
-      const netValWidth = doc.getTextWidth(netValue);
-      doc.text(netValue, netBoxX + netBoxWidth - 10 - netValWidth, y);
-
-      y += netBoxHeight + 20;
-
-      // Footer text
-      doc.setFontSize(8);
-      doc.setFont('Roboto Mono', 'italic');
-      const footerText = '**Slip gaji ini dicetak menggunakan HR System; tidak membutuhkan stamp atau tanda tangan**';
-      doc.text(footerText, marginLeft, y);
-
-      doc.save('slip_gaji.pdf');
+      pdf.save('slip_gaji.pdf');
     });
   </script>
 </body>
