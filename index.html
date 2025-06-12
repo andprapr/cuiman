@@ -205,6 +205,7 @@
           <p id="companyName2Display">RUMAHFRESH</p>
           <p id="companyAddress1Display">Jl. Jujur No. 9</p>
           <p id="companyAddress2Display">Kedung Badak Baru - Bogor</p>
+          <p id="companyPhoneDisplay">Telp: 021-12345678</p>
         </div>
       </div>
       <div class="text-[14px] font-mono leading-[1] whitespace-nowrap text-shadow font-bold" id="confidentialDisplay">
@@ -290,6 +291,10 @@
       <div class="form-group">
         <label for="companyAddress2">Alamat 2</label>
         <input type="text" id="companyAddress2" name="companyAddress2" value="Kedung Badak Baru - Bogor" />
+      </div>
+      <div class="form-group">
+        <label for="companyPhone">No. Telepon</label>
+        <input type="text" id="companyPhone" name="companyPhone" value="Telp: 021-12345678" />
       </div>
       <div class="form-group">
         <label for="confidential">Teks Confidential</label>
@@ -379,6 +384,7 @@ Pinjaman|0</textarea>
     const companyName2Display = document.getElementById('companyName2Display');
     const companyAddress1Display = document.getElementById('companyAddress1Display');
     const companyAddress2Display = document.getElementById('companyAddress2Display');
+    const companyPhoneDisplay = document.getElementById('companyPhoneDisplay');
     const confidentialDisplay = document.getElementById('confidentialDisplay');
 
     const nikDisplay = document.getElementById('nikDisplay');
@@ -434,6 +440,7 @@ Pinjaman|0</textarea>
       companyName2Display.textContent = form.companyName2.value.trim() || 'RUMAHFRESH';
       companyAddress1Display.textContent = form.companyAddress1.value.trim() || 'Jl. Jujur No. 9';
       companyAddress2Display.textContent = form.companyAddress2.value.trim() || 'Kedung Badak Baru - Bogor';
+      companyPhoneDisplay.textContent = form.companyPhone.value.trim() || 'Telp: 021-12345678';
       confidentialDisplay.textContent = form.confidential.value.trim() || 'PRIVATE & CONFIDENTIAL';
 
       // Update info and bank
