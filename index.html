@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Slip Gaji Kwitansi Style with Larger Blue Buttons</title>
+  <title>Slip Gaji Kwitansi Style with Editable Tax ID Fix</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
@@ -474,13 +474,7 @@ Pinjaman|0</textarea>
     const confidentialDisplay = document.getElementById('confidentialDisplay');
 
     const nikDisplay = document.getElementById('nikDisplay');
-    const taxIdDisplay = document.createElement('p');
-    taxIdDisplay.id = 'taxIdDisplay';
-    taxIdDisplay.style.margin = '2px 0';
-    taxIdDisplay.style.fontFamily = "'Roboto Mono', monospace";
-    taxIdDisplay.style.fontSize = '10px';
-    taxIdDisplay.style.width = 'fit-content';
-
+    const taxIdDisplay = document.getElementById('taxIdDisplay');
     const nameDisplay = document.getElementById('nameDisplay');
     const positionDisplay = document.getElementById('positionDisplay');
     const bankDisplay = document.getElementById('bankDisplay');
@@ -501,11 +495,18 @@ Pinjaman|0</textarea>
     const companyLogoInput = document.getElementById('companyLogo');
     const logoInSlip = document.getElementById('logoInSlip');
 
-    // Insert Tax ID display below Nama in info-bank left column
+    // Insert Tax ID display below Nama in info-bank left column if not present
     const infoBankLeft = document.querySelector('.info-bank > div:first-child');
     if (!document.getElementById('taxIdDisplay')) {
-      infoBankLeft.insertBefore(taxIdDisplay, nameDisplay.nextSibling);
+      const taxIdP = document.createElement('p');
+      taxIdP.id = 'taxIdDisplay';
+      taxIdP.style.margin = '2px 0';
+      taxIdP.style.fontFamily = "'Roboto Mono', monospace";
+      taxIdP.style.fontSize = '10px';
+      taxIdP.innerHTML = '<span class="inline-block w-[80px]">Tax ID</span>: <span id="taxIdValue"></span>';
+      infoBankLeft.insertBefore(taxIdP, nameDisplay.nextSibling);
     }
+    const taxIdValueSpan = document.getElementById('taxIdValue');
 
     // Show preview below input and also show logo in slip header
     companyLogoInput.addEventListener('change', (e) => {
@@ -548,7 +549,7 @@ Pinjaman|0</textarea>
 
       // Update info and bank
       nikDisplay.textContent = form.nik.value.trim() || '05212';
-      taxIdDisplay.textContent = form.taxId.value.trim() || '1234567890';
+      taxIdValueSpan.textContent = form.taxId.value.trim() || '1234567890';
       nameDisplay.textContent = form.name.value.trim() || 'Deddy Cobuzier';
       positionDisplay.textContent = form.position.value.trim() || 'Marketing Manager';
       bankDisplay.textContent = form.bank.value.trim() || 'Mandiri';
