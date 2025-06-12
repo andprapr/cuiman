@@ -495,19 +495,6 @@ Pinjaman|0</textarea>
     const companyLogoInput = document.getElementById('companyLogo');
     const logoInSlip = document.getElementById('logoInSlip');
 
-    // Insert Tax ID display below Nama in info-bank left column if not present
-    const infoBankLeft = document.querySelector('.info-bank > div:first-child');
-    if (!document.getElementById('taxIdDisplay')) {
-      const taxIdP = document.createElement('p');
-      taxIdP.id = 'taxIdDisplay';
-      taxIdP.style.margin = '2px 0';
-      taxIdP.style.fontFamily = "'Roboto Mono', monospace";
-      taxIdP.style.fontSize = '10px';
-      taxIdP.innerHTML = '<span class="inline-block w-[80px]">Tax ID</span>: <span id="taxIdValue"></span>';
-      infoBankLeft.insertBefore(taxIdP, nameDisplay.nextSibling);
-    }
-    const taxIdValueSpan = document.getElementById('taxIdValue');
-
     // Show preview below input and also show logo in slip header
     companyLogoInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
@@ -549,7 +536,7 @@ Pinjaman|0</textarea>
 
       // Update info and bank
       nikDisplay.textContent = form.nik.value.trim() || '05212';
-      taxIdValueSpan.textContent = form.taxId.value.trim() || '1234567890';
+      taxIdDisplay.textContent = form.taxId.value.trim() || '1234567890';
       nameDisplay.textContent = form.name.value.trim() || 'Deddy Cobuzier';
       positionDisplay.textContent = form.position.value.trim() || 'Marketing Manager';
       bankDisplay.textContent = form.bank.value.trim() || 'Mandiri';
