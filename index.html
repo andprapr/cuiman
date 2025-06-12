@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Slip Gaji Editable with Watermark Inside Slip</title>
+  <title>Slip Gaji Kwitansi Style with Editable Form</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
@@ -10,25 +10,20 @@
     body {
       font-family: 'Roboto Mono', monospace;
       font-size: 12px;
-      line-height: 1.2;
+      line-height: 1.3;
       background: white;
       color: #222;
       user-select: none;
       padding: 2rem;
     }
     .slip-container {
-      max-width: 800px;
+      max-width: 700px;
       margin: 0 auto 3rem auto;
       background: white;
-      border: 2px solid #444;
-      box-shadow:
-        inset 0 0 8px #bbb,
-        0 0 12px #aaa;
-      padding: 2rem 2.5rem;
-      filter: contrast(1.1) brightness(1);
-      color: #222;
+      border: 2px solid #000;
+      padding: 2rem 2rem;
       position: relative;
-      overflow: visible;
+      box-shadow: 0 0 10px #aaa;
     }
     /* Watermark style inside slip container */
     .watermark {
@@ -36,7 +31,7 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) rotate(-30deg);
-      font-size: 120px;
+      font-size: 100px;
       font-weight: 900;
       color: rgba(0, 0, 0, 0.05);
       user-select: none;
@@ -45,22 +40,194 @@
       z-index: 0;
       font-family: 'Roboto Mono', monospace;
       mix-blend-mode: multiply;
+      letter-spacing: 12px;
     }
-    /* Content above watermark */
     .content {
       position: relative;
       z-index: 1;
     }
     hr {
-      border-color: #666;
+      border-color: #000;
       margin: 0.5rem 0 0.75rem 0;
     }
-    .border-black {
-      border-color: #666 !important;
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
-    .text-shadow {
-      text-shadow:
-        0 0 1px #bbb;
+    .logo-in-slip {
+      max-width: 90px;
+      max-height: 70px;
+      object-fit: contain;
+      background: white;
+      border-radius: 0;
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+    .company-info {
+      font-size: 10px;
+      line-height: 1.1;
+      font-family: 'Roboto Mono', monospace;
+      color: #000;
+    }
+    .confidential-text {
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'Roboto Mono', monospace;
+      white-space: nowrap;
+      text-align: right;
+    }
+    .info-bank {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'Roboto Mono', monospace;
+      font-size: 10px;
+      margin-bottom: 0.5rem;
+    }
+    .info-bank div {
+      width: 48%;
+    }
+    .info-bank p {
+      margin: 2px 0;
+    }
+    .table-header {
+      display: flex;
+      font-family: 'Roboto Mono', monospace;
+      font-weight: 700;
+      font-size: 10px;
+      border-top: 1px solid #000;
+      border-bottom: 1px solid #000;
+      padding: 4px 0;
+      margin-bottom: 4px;
+    }
+    .table-header div {
+      flex: 1;
+      text-align: center;
+      border-right: 1px solid #000;
+      padding: 0 4px;
+    }
+    .table-header div:last-child {
+      border-right: none;
+    }
+    .table-content {
+      display: flex;
+      font-family: 'Roboto Mono', monospace;
+      font-size: 10px;
+      margin-bottom: 4px;
+    }
+    .table-content .col-info {
+      flex: 1;
+      border-right: 1px solid #000;
+      padding: 0 4px;
+      line-height: 1.2;
+    }
+    .table-content .col-income,
+    .table-content .col-deduction {
+      flex: 1;
+      border-right: 1px solid #000;
+      padding: 0 4px;
+      line-height: 1.2;
+    }
+    .table-content .col-deduction {
+      border-right: none;
+    }
+    .line-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 1px 0;
+    }
+    .line-item span:first-child {
+      text-align: left;
+      flex: 1;
+    }
+    .line-item span:last-child {
+      text-align: right;
+      width: 90px;
+      min-width: 90px;
+    }
+    .totals-row {
+      display: flex;
+      font-family: 'Roboto Mono', monospace;
+      font-weight: 700;
+      font-size: 10px;
+      line-height: 1.3;
+      border-top: 1px solid #000;
+      border-bottom: 1px solid #000;
+      padding: 6px 0;
+      margin-bottom: 8px;
+    }
+    .totals-label {
+      flex: 1;
+      text-align: center;
+      border-right: 1px solid #000;
+      padding: 0 8px;
+    }
+    .totals-value {
+      width: 120px;
+      text-align: right;
+      border-left: 1px solid #000;
+      border-right: 1px solid #000;
+      padding-right: 8px;
+      font-weight: 400;
+    }
+    .totals-value-left {
+      width: 120px;
+      text-align: left;
+      border-left: 1px solid #000;
+      padding-left: 8px;
+      font-weight: 400;
+    }
+    .net-income-row {
+      display: flex;
+      justify-content: flex-end;
+      font-family: 'Roboto Mono', monospace;
+      font-weight: 700;
+      font-size: 10px;
+      line-height: 1.3;
+      margin-bottom: 0;
+    }
+    .net-income-label {
+      margin-right: 8px;
+    }
+    .net-income-value {
+      width: 120px;
+      text-align: right;
+      border: 1px solid #000;
+      padding: 4px 8px 4px 0;
+      font-weight: 400;
+    }
+    p.footer-text {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 8px;
+      font-style: italic;
+      margin-top: 1rem;
+      user-select: none;
+    }
+    /* Form styles */
+    .form-section {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fefefe;
+      border: 2px solid #ccc;
+      padding: 2rem 2rem;
+      box-shadow: 0 0 10px #ddd;
+      border-radius: 6px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap: 1.5rem 2rem;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      font-weight: 600;
+      margin-bottom: 0.15rem;
+      display: block;
+      color: #333;
     }
     input[type="text"], input[type="number"], input[type="file"], textarea {
       font-family: 'Roboto Mono', monospace;
@@ -79,30 +246,6 @@
     input[type="text"]:focus, input[type="number"]:focus, input[type="file"]:focus, textarea:focus {
       outline-color: #555;
       background: #fff;
-    }
-    label {
-      font-weight: 600;
-      margin-bottom: 0.15rem;
-      display: block;
-      color: #333;
-    }
-    .form-section {
-      max-width: 800px;
-      margin: 0 auto;
-      background: #fefefe;
-      border: 2px solid #ccc;
-      padding: 2rem 2.5rem;
-      box-shadow: 0 0 10px #ddd;
-      border-radius: 6px;
-    }
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-      gap: 1.5rem 2rem;
-    }
-    .form-group {
-      display: flex;
-      flex-direction: column;
     }
     button {
       font-family: 'Roboto Mono', monospace;
@@ -130,121 +273,32 @@
       background: white;
       display: none;
     }
-    .logo-in-slip {
-      max-width: 100px;
-      max-height: 80px;
-      object-fit: contain;
-      background: white;
-      margin-right: 1rem;
-      flex-shrink: 0;
-      border: none !important;
-      outline: none !important;
-      box-shadow: none !important;
-    }
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    .company-info {
-      font-size: 9px;
-      line-height: 1.1;
-      font-family: 'Roboto Mono', monospace;
-      color: #222;
-    }
-    /* Income and deduction lines */
-    .line-item {
-      display: flex;
-      justify-content: space-between;
-      font-family: 'Roboto Mono', monospace;
-      font-size: 10px;
-      line-height: 1.3;
-      padding-right: 0.5rem;
-    }
-    /* Totals row styling */
-    .totals-row {
-      display: flex;
-      font-family: 'Roboto Mono', monospace;
-      font-weight: 700;
-      font-size: 10px;
-      line-height: 1.3;
-      border-top: 1px solid #666;
-      border-bottom: 1px solid #666;
-      padding: 0.25rem 0;
-      margin-bottom: 0.75rem;
-    }
-    .totals-label {
-      flex: 1;
-      text-align: center;
-      border-right: 1px solid #666;
-      padding-left: 0.75rem;
-      padding-right: 0.75rem;
-    }
-    .totals-value {
-      width: 120px;
-      text-align: right;
-      border-left: 1px solid #666;
-      border-right: 1px solid #666;
-      padding-right: 1rem;
-      font-weight: 400;
-    }
-    .totals-value-left {
-      width: 120px;
-      text-align: left;
-      border-left: 1px solid #666;
-      padding-left: 0.75rem;
-      font-weight: 400;
-    }
-    /* Net income row */
-    .net-income-row {
-      display: flex;
-      justify-content: flex-end;
-      font-family: 'Roboto Mono', monospace;
-      font-weight: 700;
-      font-size: 10px;
-      line-height: 1.3;
-      margin-bottom: 1rem;
-    }
-    .net-income-label {
-      margin-right: 1rem;
-    }
-    .net-income-value {
-      width: 120px;
-      text-align: right;
-      border: 1px solid #666;
-      padding-right: 0.75rem;
-      font-weight: 400;
-    }
   </style>
 </head>
 <body>
   <div class="slip-container select-none" id="slip">
-    <div class="watermark">SLIP RESMI</div>
+    <div class="watermark" id="watermarkText">PERUSAHAAN RESMI</div>
     <div class="content">
-      <!-- Header top -->
-      <div class="flex justify-between items-start border-b border-black pb-3 mb-3">
+      <div class="flex justify-between items-start mb-3">
         <div class="header-left">
           <img src="" alt="Logo Perusahaan" id="logoInSlip" class="logo-in-slip" style="display:none;" />
-          <div class="company-info text-shadow">
+          <div class="company-info">
             <p id="companyName2Display">RUMAHFRESH</p>
             <p id="companyAddress1Display">Jl. Jujur No. 9</p>
             <p id="companyAddress2Display">Kedung Badak Baru - Bogor</p>
             <p id="companyPhoneDisplay">Telp: 021-12345678</p>
           </div>
         </div>
-        <div class="text-[14px] font-mono leading-[1] whitespace-nowrap text-shadow font-bold" id="confidentialDisplay">
-          PRIVATE &amp; CONFIDENTIAL
-        </div>
+        <div class="confidential-text" id="confidentialDisplay">PRIVATE &amp; CONFIDENTIAL</div>
       </div>
 
-      <!-- Info and bank -->
-      <div class="flex justify-between text-[10px] font-mono leading-[1.3] mb-4 text-shadow">
-        <div class="space-y-1">
+      <div class="info-bank">
+        <div>
           <p><span class="inline-block w-[80px]">NIK</span>: <span id="nikDisplay">05212</span></p>
           <p><span class="inline-block w-[80px]">Nama</span>: <span id="nameDisplay">Deddy Cobuzier</span></p>
           <p><span class="inline-block w-[80px]">Jabatan</span>: <span id="positionDisplay">Marketing Manager</span></p>
         </div>
-        <div class="space-y-1 text-right">
+        <div class="text-right">
           <p><span class="inline-block w-[80px]">Bank</span>: <span id="bankDisplay">Mandiri</span></p>
           <p><span class="inline-block w-[80px]">Transfer</span>: <span id="transferDisplay">A/C 9000019288613</span></p>
           <p><span class="inline-block w-[80px]">Periode</span>: <span id="periodDisplay">Oktober 2017</span></p>
@@ -253,44 +307,40 @@
 
       <hr />
 
-      <!-- Table header -->
-      <div class="flex font-mono font-bold text-[10px] leading-[1.3] border-b border-black pb-2 mb-2 text-shadow">
-        <div class="w-1/3 border-r border-black pl-3">INFORMASI</div>
-        <div class="w-1/3 border-r border-black pl-3">PENDAPATAN</div>
-        <div class="w-1/3 pl-3">PENGURANGAN</div>
+      <div class="table-header">
+        <div>INFORMASI</div>
+        <div>PENDAPATAN</div>
+        <div>PENGURANGAN</div>
       </div>
 
-      <!-- Table content -->
-      <div class="flex font-mono text-[10px] leading-[1.3] text-shadow">
-        <div class="w-1/3 border-r border-black pl-3">
-          <p class="mb-2" id="info1Display">Year to date</p>
+      <div class="table-content">
+        <div class="col-info">
+          <p id="info1Display">Year to date</p>
           <p id="info2Display">Okt - 2017</p>
         </div>
-        <div class="w-1/3 border-r border-black pl-3 space-y-1" id="incomeList">
+        <div class="col-income" id="incomeList">
           <!-- Income lines inserted here -->
         </div>
-        <div class="w-1/3 pl-3 space-y-1" id="deductionList">
+        <div class="col-deduction" id="deductionList">
           <!-- Deduction lines inserted here -->
         </div>
       </div>
 
-      <hr class="my-4" />
+      <hr />
 
-      <!-- Totals row -->
       <div class="totals-row">
-        <div class="totals-label border-r border-black">TOTAL PENDAPATAN</div>
-        <div class="totals-value border-r border-black" id="totalIncomeDisplay">10,784,640</div>
+        <div class="totals-label">TOTAL PENDAPATAN</div>
+        <div class="totals-value" id="totalIncomeDisplay">10,784,640</div>
         <div class="totals-label">TOTAL PENGURANGAN</div>
-        <div class="totals-value-left border border-black ml-3" id="totalDeductionDisplay">1,728,640</div>
+        <div class="totals-value-left" id="totalDeductionDisplay">1,728,640</div>
       </div>
 
-      <!-- Pendapatan Bersih -->
       <div class="net-income-row">
         <div class="net-income-label">PENDAPATAN BERSIH</div>
         <div class="net-income-value" id="netIncomeDisplay">8,856,000</div>
       </div>
 
-      <p class="text-[8px] font-mono italic mt-6 text-shadow">
+      <p class="footer-text">
         **Slip gaji ini dicetak menggunakan HR System; tidak membutuhkan stamp atau tanda tangan**
       </p>
     </div>
@@ -404,6 +454,7 @@ Pinjaman|0</textarea>
 
   <script>
     const form = document.getElementById('inputForm');
+    const watermarkText = document.getElementById('watermarkText');
 
     // Elements to update
     const companyName2Display = document.getElementById('companyName2Display');
@@ -462,11 +513,15 @@ Pinjaman|0</textarea>
       updateBtn.textContent = 'Updating...';
 
       // Update header
-      companyName2Display.textContent = form.companyName2.value.trim() || 'RUMAHFRESH';
+      const companyNameValue = form.companyName2.value.trim() || 'RUMAHFRESH';
+      companyName2Display.textContent = companyNameValue;
       companyAddress1Display.textContent = form.companyAddress1.value.trim() || 'Jl. Jujur No. 9';
       companyAddress2Display.textContent = form.companyAddress2.value.trim() || 'Kedung Badak Baru - Bogor';
       companyPhoneDisplay.textContent = form.companyPhone.value.trim() || 'Telp: 021-12345678';
       confidentialDisplay.textContent = form.confidential.value.trim() || 'PRIVATE & CONFIDENTIAL';
+
+      // Update watermark text dynamically
+      watermarkText.textContent = companyNameValue.toUpperCase();
 
       // Update info and bank
       nikDisplay.textContent = form.nik.value.trim() || '05212';
