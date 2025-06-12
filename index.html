@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Slip Gaji Kwitansi Style with Smaller Watermark</title>
+  <title>Slip Gaji Kwitansi Style with Tax ID</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
@@ -31,7 +31,7 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) rotate(-30deg);
-      font-size: 60px; /* smaller size */
+      font-size: 60px;
       font-weight: 900;
       color: rgba(0, 0, 0, 0.05);
       user-select: none;
@@ -299,6 +299,7 @@
           <p><span class="inline-block w-[80px]">NIK</span>: <span id="nikDisplay">05212</span></p>
           <p><span class="inline-block w-[80px]">Nama</span>: <span id="nameDisplay">Deddy Cobuzier</span></p>
           <p><span class="inline-block w-[80px]">Jabatan</span>: <span id="positionDisplay">Marketing Manager</span></p>
+          <p><span class="inline-block w-[80px]">Tax ID</span>: <span id="taxIdDisplay">1234567890</span></p>
         </div>
         <div class="text-right">
           <p><span class="inline-block w-[80px]">Bank</span>: <span id="bankDisplay">Mandiri</span></p>
@@ -381,6 +382,10 @@
       <div class="form-group">
         <label for="nik">NIK</label>
         <input type="text" id="nik" name="nik" value="05212" />
+      </div>
+      <div class="form-group">
+        <label for="taxId">Tax ID</label>
+        <input type="text" id="taxId" name="taxId" value="1234567890" />
       </div>
       <div class="form-group">
         <label for="name">Nama</label>
@@ -466,6 +471,13 @@ Pinjaman|0</textarea>
     const confidentialDisplay = document.getElementById('confidentialDisplay');
 
     const nikDisplay = document.getElementById('nikDisplay');
+    const taxIdDisplay = document.createElement('p');
+    taxIdDisplay.id = 'taxIdDisplay';
+    taxIdDisplay.style.margin = '2px 0';
+    taxIdDisplay.style.fontFamily = "'Roboto Mono', monospace";
+    taxIdDisplay.style.fontSize = '10px';
+    taxIdDisplay.style.width = 'fit-content';
+
     const nameDisplay = document.getElementById('nameDisplay');
     const positionDisplay = document.getElementById('positionDisplay');
     const bankDisplay = document.getElementById('bankDisplay');
@@ -485,6 +497,12 @@ Pinjaman|0</textarea>
     const logoPreview = document.getElementById('logoPreview');
     const companyLogoInput = document.getElementById('companyLogo');
     const logoInSlip = document.getElementById('logoInSlip');
+
+    // Insert Tax ID display below Nama in info-bank left column
+    const infoBankLeft = document.querySelector('.info-bank > div:first-child');
+    if (!document.getElementById('taxIdDisplay')) {
+      infoBankLeft.insertBefore(taxIdDisplay, nameDisplay.nextSibling);
+    }
 
     // Show preview below input and also show logo in slip header
     companyLogoInput.addEventListener('change', (e) => {
@@ -527,6 +545,7 @@ Pinjaman|0</textarea>
 
       // Update info and bank
       nikDisplay.textContent = form.nik.value.trim() || '05212';
+      taxIdDisplay.textContent = form.taxId.value.trim() || '1234567890';
       nameDisplay.textContent = form.name.value.trim() || 'Deddy Cobuzier';
       positionDisplay.textContent = form.position.value.trim() || 'Marketing Manager';
       bankDisplay.textContent = form.bank.value.trim() || 'Mandiri';
