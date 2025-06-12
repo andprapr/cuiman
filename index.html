@@ -621,14 +621,14 @@ Pinjaman|0</textarea>
           const value = incomeLines[i].children[1].textContent;
           doc.text(label, col2X, y);
           const valWidth = doc.getTextWidth(value);
-          doc.text(value, col2X + 180 - valWidth - 5, y); // added 5pt padding from border
+          doc.text(value, col2X + 180 - valWidth - 5, y);
         }
         if (i < deductionLines.length) {
           const label = deductionLines[i].children[0].textContent;
           const value = deductionLines[i].children[1].textContent;
           doc.text(label, col3X, y);
           const valWidth = doc.getTextWidth(value);
-          doc.text(value, col3X + 180 - valWidth - 5, y); // added 5pt padding from border
+          doc.text(value, col3X + 180 - valWidth - 5, y);
         }
         y += lineHeight;
         if (y > doc.internal.pageSize.getHeight() - 80) {
@@ -699,7 +699,6 @@ Pinjaman|0</textarea>
       doc.setFontSize(8);
       doc.setFont('Roboto Mono', 'italic');
       const footerText = '**Slip gaji ini dicetak menggunakan HR System; tidak membutuhkan stamp atau tanda tangan**';
-      const footerWidth = doc.getTextWidth(footerText);
       doc.text(footerText, marginLeft, y);
 
       doc.save('slip_gaji.pdf');
