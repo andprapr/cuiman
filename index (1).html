@@ -1,0 +1,703 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Slip Gaji Editable with PDF Download</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+    body {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 12px;
+      line-height: 1.2;
+      background: white;
+      color: #222;
+      user-select: none;
+      padding: 2rem;
+    }
+    .slip-container {
+      max-width: 800px;
+      margin: 0 auto 3rem auto;
+      background: white;
+      border: 2px solid #444;
+      box-shadow:
+        inset 0 0 8px #bbb,
+        0 0 12px #aaa;
+      padding: 2rem 2.5rem;
+      filter: contrast(1.1) brightness(1);
+      color: #222;
+      position: relative;
+    }
+    hr {
+      border-color: #666;
+      margin: 0.5rem 0 0.75rem 0;
+    }
+    .border-black {
+      border-color: #666 !important;
+    }
+    .text-shadow {
+      text-shadow:
+        0 0 1px #bbb;
+    }
+    input[type="text"], input[type="number"], input[type="file"], textarea {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 12px;
+      border: 1px solid #999;
+      background: #f9f9f9;
+      padding: 0.25rem 0.5rem;
+      outline-offset: 2px;
+      outline-color: #888;
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 3px;
+      transition: outline-color 0.2s ease;
+      resize: vertical;
+    }
+    input[type="text"]:focus, input[type="number"]:focus, input[type="file"]:focus, textarea:focus {
+      outline-color: #555;
+      background: #fff;
+    }
+    label {
+      font-weight: 600;
+      margin-bottom: 0.15rem;
+      display: block;
+      color: #333;
+    }
+    .form-section {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fefefe;
+      border: 2px solid #ccc;
+      padding: 2rem 2.5rem;
+      box-shadow: 0 0 10px #ddd;
+      border-radius: 6px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap: 1.5rem 2rem;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    button {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 12px;
+      background-color: #444;
+      color: white;
+      padding: 0.5rem 1.5rem;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 1rem;
+      width: max-content;
+      user-select: none;
+    }
+    button:hover {
+      background-color: #222;
+    }
+    .image-preview {
+      max-width: 150px;
+      max-height: 80px;
+      object-fit: contain;
+      margin-top: 0.5rem;
+      border-radius: 4px;
+      background: white;
+      display: none;
+    }
+    .logo-in-slip {
+      max-width: 100px;
+      max-height: 80px;
+      object-fit: contain;
+      background: white;
+      margin-right: 1rem;
+      flex-shrink: 0;
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .company-info {
+      font-size: 9px;
+      line-height: 1.1;
+      font-family: 'Roboto Mono', monospace;
+      color: #222;
+    }
+    /* Income and deduction lines */
+    .line-item {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'Roboto Mono', monospace;
+      font-size: 10px;
+      line-height: 1.3;
+      padding-right: 0.5rem;
+    }
+    /* Totals row styling */
+    .totals-row {
+      display: flex;
+      font-family: 'Roboto Mono', monospace;
+      font-weight: 700;
+      font-size: 10px;
+      line-height: 1.3;
+      border-top: 1px solid #666;
+      border-bottom: 1px solid #666;
+      padding: 0.25rem 0;
+      margin-bottom: 0.75rem;
+    }
+    .totals-label {
+      flex: 1;
+      text-align: center;
+      border-right: 1px solid #666;
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
+    .totals-value {
+      width: 120px;
+      text-align: right;
+      border-left: 1px solid #666;
+      border-right: 1px solid #666;
+      padding-right: 1rem;
+      font-weight: 400;
+    }
+    .totals-value-left {
+      width: 120px;
+      text-align: left;
+      border-left: 1px solid #666;
+      padding-left: 0.75rem;
+      font-weight: 400;
+    }
+    /* Net income row */
+    .net-income-row {
+      display: flex;
+      justify-content: flex-end;
+      font-family: 'Roboto Mono', monospace;
+      font-weight: 700;
+      font-size: 10px;
+      line-height: 1.3;
+      margin-bottom: 1rem;
+    }
+    .net-income-label {
+      margin-right: 1rem;
+    }
+    .net-income-value {
+      width: 120px;
+      text-align: right;
+      border: 1px solid #666;
+      padding-right: 0.75rem;
+      font-weight: 400;
+    }
+  </style>
+</head>
+<body>
+  <div class="slip-container select-none" id="slip">
+    <!-- Header top -->
+    <div class="flex justify-between items-start border-b border-black pb-3 mb-3">
+      <div class="header-left">
+        <img src="" alt="Logo Perusahaan" id="logoInSlip" class="logo-in-slip" style="display:none;" />
+        <div class="company-info text-shadow">
+          <p id="companyName2Display">RUMAHFRESH</p>
+          <p id="companyAddress1Display">Jl. Jujur No. 9</p>
+          <p id="companyAddress2Display">Kedung Badak Baru - Bogor</p>
+        </div>
+      </div>
+      <div class="text-[14px] font-mono leading-[1] whitespace-nowrap text-shadow font-bold" id="confidentialDisplay">
+        PRIVATE &amp; CONFIDENTIAL
+      </div>
+    </div>
+
+    <!-- Info and bank -->
+    <div class="flex justify-between text-[10px] font-mono leading-[1.3] mb-4 text-shadow">
+      <div class="space-y-1">
+        <p><span class="inline-block w-[80px]">NIK</span>: <span id="nikDisplay">05212</span></p>
+        <p><span class="inline-block w-[80px]">Nama</span>: <span id="nameDisplay">Deddy Cobuzier</span></p>
+        <p><span class="inline-block w-[80px]">Jabatan</span>: <span id="positionDisplay">Marketing Manager</span></p>
+      </div>
+      <div class="space-y-1 text-right">
+        <p><span class="inline-block w-[80px]">Bank</span>: <span id="bankDisplay">Mandiri</span></p>
+        <p><span class="inline-block w-[80px]">Transfer</span>: <span id="transferDisplay">A/C 9000019288613</span></p>
+        <p><span class="inline-block w-[80px]">Periode</span>: <span id="periodDisplay">Oktober 2017</span></p>
+      </div>
+    </div>
+
+    <hr />
+
+    <!-- Table header -->
+    <div class="flex font-mono font-bold text-[10px] leading-[1.3] border-b border-black pb-2 mb-2 text-shadow">
+      <div class="w-1/3 border-r border-black pl-3">INFORMASI</div>
+      <div class="w-1/3 border-r border-black pl-3">PENDAPATAN</div>
+      <div class="w-1/3 pl-3">PENGURANGAN</div>
+    </div>
+
+    <!-- Table content -->
+    <div class="flex font-mono text-[10px] leading-[1.3] text-shadow">
+      <div class="w-1/3 border-r border-black pl-3">
+        <p class="mb-2" id="info1Display">Year to date</p>
+        <p id="info2Display">Okt - 2017</p>
+      </div>
+      <div class="w-1/3 border-r border-black pl-3 space-y-1" id="incomeList">
+        <!-- Income lines inserted here -->
+      </div>
+      <div class="w-1/3 pl-3 space-y-1" id="deductionList">
+        <!-- Deduction lines inserted here -->
+      </div>
+    </div>
+
+    <hr class="my-4" />
+
+    <!-- Totals row -->
+    <div class="totals-row">
+      <div class="totals-label border-r border-black">TOTAL PENDAPATAN</div>
+      <div class="totals-value border-r border-black" id="totalIncomeDisplay">10,784,640</div>
+      <div class="totals-label">TOTAL PENGURANGAN</div>
+      <div class="totals-value-left border border-black ml-3" id="totalDeductionDisplay">1,728,640</div>
+    </div>
+
+    <!-- Pendapatan Bersih -->
+    <div class="net-income-row">
+      <div class="net-income-label">PENDAPATAN BERSIH</div>
+      <div class="net-income-value" id="netIncomeDisplay">8,856,000</div>
+    </div>
+
+    <p class="text-[8px] font-mono italic mt-6 text-shadow">
+      **Slip gaji ini dicetak menggunakan HR System; tidak membutuhkan stamp atau tanda tangan**
+    </p>
+  </div>
+
+  <form class="form-section" id="inputForm" autocomplete="off">
+    <h2 class="text-xl font-bold mb-6 text-center">Edit Slip Gaji</h2>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="companyLogo">Upload Logo Perusahaan</label>
+        <input type="file" id="companyLogo" name="companyLogo" accept="image/*" />
+        <img src="" alt="Preview Logo Perusahaan" id="logoPreview" class="image-preview" />
+      </div>
+      <div class="form-group">
+        <label for="companyName2">Nama Perusahaan (Baris 1)</label>
+        <input type="text" id="companyName2" name="companyName2" value="RUMAHFRESH" />
+      </div>
+      <div class="form-group">
+        <label for="companyAddress1">Alamat 1</label>
+        <input type="text" id="companyAddress1" name="companyAddress1" value="Jl. Jujur No. 9" />
+      </div>
+      <div class="form-group">
+        <label for="companyAddress2">Alamat 2</label>
+        <input type="text" id="companyAddress2" name="companyAddress2" value="Kedung Badak Baru - Bogor" />
+      </div>
+      <div class="form-group">
+        <label for="confidential">Teks Confidential</label>
+        <input type="text" id="confidential" name="confidential" value="PRIVATE & CONFIDENTIAL" />
+      </div>
+
+      <div class="form-group">
+        <label for="nik">NIK</label>
+        <input type="text" id="nik" name="nik" value="05212" />
+      </div>
+      <div class="form-group">
+        <label for="name">Nama</label>
+        <input type="text" id="name" name="name" value="Deddy Cobuzier" />
+      </div>
+      <div class="form-group">
+        <label for="position">Jabatan</label>
+        <input type="text" id="position" name="position" value="Marketing Manager" />
+      </div>
+      <div class="form-group">
+        <label for="bank">Bank</label>
+        <input type="text" id="bank" name="bank" value="Mandiri" />
+      </div>
+      <div class="form-group">
+        <label for="transfer">Transfer</label>
+        <input type="text" id="transfer" name="transfer" value="A/C 9000019288613" />
+      </div>
+      <div class="form-group">
+        <label for="period">Periode</label>
+        <input type="text" id="period" name="period" value="Oktober 2017" />
+      </div>
+
+      <div class="form-group col-span-full">
+        <label for="info1">Informasi Baris 1</label>
+        <input type="text" id="info1" name="info1" value="Year to date" />
+      </div>
+      <div class="form-group col-span-full">
+        <label for="info2">Informasi Baris 2</label>
+        <input type="text" id="info2" name="info2" value="Okt - 2017" />
+      </div>
+
+      <div class="form-group col-span-full">
+        <label for="incomeItems">Pendapatan (format: label|value, satu per baris)</label>
+        <textarea id="incomeItems" name="incomeItems" rows="9">Gaji Pokok|8500000
+Tunjangan Jabatan|350000
+Tunjangan Komunikasi|200000
+Tunjangan Transportasi|350000
+Tunjangan Makan|450000
+Bonus|0
+Lembur|0
+BPJS Ketenagakerjaan|614640
+BPJS Kesehatan|320000</textarea>
+      </div>
+
+      <div class="form-group col-span-full">
+        <label for="deductionItems">Pengurangan (format: label|value, satu per baris)</label>
+        <textarea id="deductionItems" name="deductionItems" rows="7">PPh21|618500
+BPJS KT Persh|614640
+BPJS KT Emp|295500
+BPJS KS Persh|320000
+BPJS KS Emp|89000
+Koperasi|0
+Pinjaman|0</textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="totalIncome">Total Pendapatan</label>
+        <input type="number" id="totalIncome" name="totalIncome" value="10784640" />
+      </div>
+      <div class="form-group">
+        <label for="totalDeduction">Total Pengurangan</label>
+        <input type="number" id="totalDeduction" name="totalDeduction" value="1728640" />
+      </div>
+      <div class="form-group">
+        <label for="netIncome">Pendapatan Bersih</label>
+        <input type="number" id="netIncome" name="netIncome" value="8856000" />
+      </div>
+    </div>
+
+    <button type="submit" id="updateButton">Update Slip Gaji</button>
+    <button type="button" id="downloadPdfButton" class="ml-4">Download PDF</button>
+  </form>
+
+  <script>
+    const form = document.getElementById('inputForm');
+
+    // Elements to update
+    const companyName2Display = document.getElementById('companyName2Display');
+    const companyAddress1Display = document.getElementById('companyAddress1Display');
+    const companyAddress2Display = document.getElementById('companyAddress2Display');
+    const confidentialDisplay = document.getElementById('confidentialDisplay');
+
+    const nikDisplay = document.getElementById('nikDisplay');
+    const nameDisplay = document.getElementById('nameDisplay');
+    const positionDisplay = document.getElementById('positionDisplay');
+    const bankDisplay = document.getElementById('bankDisplay');
+    const transferDisplay = document.getElementById('transferDisplay');
+    const periodDisplay = document.getElementById('periodDisplay');
+
+    const info1Display = document.getElementById('info1Display');
+    const info2Display = document.getElementById('info2Display');
+
+    const incomeList = document.getElementById('incomeList');
+    const deductionList = document.getElementById('deductionList');
+
+    const totalIncomeDisplay = document.getElementById('totalIncomeDisplay');
+    const totalDeductionDisplay = document.getElementById('totalDeductionDisplay');
+    const netIncomeDisplay = document.getElementById('netIncomeDisplay');
+
+    const logoPreview = document.getElementById('logoPreview');
+    const companyLogoInput = document.getElementById('companyLogo');
+    const logoInSlip = document.getElementById('logoInSlip');
+
+    // Show preview below input and also show logo in slip header
+    companyLogoInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          logoPreview.src = evt.target.result;
+          logoPreview.style.display = 'block';
+          logoInSlip.src = evt.target.result;
+          logoInSlip.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      } else {
+        logoPreview.src = '';
+        logoPreview.style.display = 'none';
+        logoInSlip.src = '';
+        logoInSlip.style.display = 'none';
+      }
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      // Disable button while updating
+      const updateBtn = document.getElementById('updateButton');
+      updateBtn.disabled = true;
+      updateBtn.textContent = 'Updating...';
+
+      // Update header
+      companyName2Display.textContent = form.companyName2.value.trim() || 'RUMAHFRESH';
+      companyAddress1Display.textContent = form.companyAddress1.value.trim() || 'Jl. Jujur No. 9';
+      companyAddress2Display.textContent = form.companyAddress2.value.trim() || 'Kedung Badak Baru - Bogor';
+      confidentialDisplay.textContent = form.confidential.value.trim() || 'PRIVATE & CONFIDENTIAL';
+
+      // Update info and bank
+      nikDisplay.textContent = form.nik.value.trim() || '05212';
+      nameDisplay.textContent = form.name.value.trim() || 'Deddy Cobuzier';
+      positionDisplay.textContent = form.position.value.trim() || 'Marketing Manager';
+      bankDisplay.textContent = form.bank.value.trim() || 'Mandiri';
+      transferDisplay.textContent = form.transfer.value.trim() || 'A/C 9000019288613';
+      periodDisplay.textContent = form.period.value.trim() || 'Oktober 2017';
+
+      // Update info lines
+      info1Display.textContent = form.info1.value.trim() || 'Year to date';
+      info2Display.textContent = form.info2.value.trim() || 'Okt - 2017';
+
+      // Update income list with left label and right value
+      incomeList.innerHTML = '';
+      const incomeLines = form.incomeItems.value.trim().split('\n').filter(l => l.trim());
+      incomeLines.forEach(line => {
+        const [label, value] = line.split('|').map(s => s.trim());
+        const div = document.createElement('div');
+        div.className = 'line-item';
+        const spanLabel = document.createElement('span');
+        spanLabel.textContent = label || '';
+        const spanValue = document.createElement('span');
+        spanValue.textContent = value ? Number(value).toLocaleString('id-ID') : '';
+        div.appendChild(spanLabel);
+        div.appendChild(spanValue);
+        incomeList.appendChild(div);
+      });
+
+      // Update deduction list with left label and right value
+      deductionList.innerHTML = '';
+      const deductionLines = form.deductionItems.value.trim().split('\n').filter(l => l.trim());
+      deductionLines.forEach(line => {
+        const [label, value] = line.split('|').map(s => s.trim());
+        const div = document.createElement('div');
+        div.className = 'line-item';
+        const spanLabel = document.createElement('span');
+        spanLabel.textContent = label || '';
+        const spanValue = document.createElement('span');
+        spanValue.textContent = value ? Number(value).toLocaleString('id-ID') : '';
+        div.appendChild(spanLabel);
+        div.appendChild(spanValue);
+        deductionList.appendChild(div);
+      });
+
+      // Update totals and net income
+      totalIncomeDisplay.textContent = Number(form.totalIncome.value || 0).toLocaleString('id-ID');
+      totalDeductionDisplay.textContent = Number(form.totalDeduction.value || 0).toLocaleString('id-ID');
+      netIncomeDisplay.textContent = Number(form.netIncome.value || 0).toLocaleString('id-ID');
+
+      // Re-enable button
+      setTimeout(() => {
+        updateBtn.disabled = false;
+        updateBtn.textContent = 'Update Slip Gaji';
+      }, 300);
+    });
+
+    // Initialize with default values on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      form.dispatchEvent(new Event('submit'));
+    });
+
+    // PDF Download
+    document.getElementById('downloadPdfButton').addEventListener('click', async () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({
+        unit: 'pt',
+        format: 'a4',
+      });
+
+      const marginLeft = 40;
+      let y = 40;
+      const lineHeight = 18;
+      const pageWidth = doc.internal.pageSize.getWidth();
+
+      // Draw logo if exists
+      const logoImg = document.getElementById('logoInSlip');
+      if (logoImg && logoImg.src) {
+        try {
+          // Draw image max width 80pt, max height 60pt
+          const imgProps = await new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+              resolve({ width: img.width, height: img.height });
+            };
+            img.src = logoImg.src;
+          });
+          let imgWidth = 80;
+          let imgHeight = (imgProps.height / imgProps.width) * imgWidth;
+          if (imgHeight > 60) {
+            imgHeight = 60;
+            imgWidth = (imgProps.width / imgProps.height) * imgHeight;
+          }
+          doc.addImage(logoImg.src, 'PNG', marginLeft, y, imgWidth, imgHeight);
+        } catch {
+          // ignore image errors
+        }
+      }
+
+      // Company info text start X (after logo)
+      const infoX = marginLeft + 90;
+      const infoYStart = y + 5;
+      doc.setFont('Roboto Mono', 'normal');
+      doc.setFontSize(9);
+      doc.text(document.getElementById('companyName2Display').textContent, infoX, infoYStart);
+      doc.text(document.getElementById('companyAddress1Display').textContent, infoX, infoYStart + lineHeight);
+      doc.text(document.getElementById('companyAddress2Display').textContent, infoX, infoYStart + lineHeight * 2);
+
+      // Confidential text right aligned
+      doc.setFontSize(14);
+      doc.setFont('Roboto Mono', 'bold');
+      const confidentialText = document.getElementById('confidentialDisplay').textContent;
+      const confidentialWidth = doc.getTextWidth(confidentialText);
+      doc.text(confidentialText, pageWidth - marginLeft - confidentialWidth, y + 15);
+
+      y += 80;
+
+      doc.setFontSize(10);
+      doc.setFont('Roboto Mono', 'normal');
+
+      // Info and bank section
+      const leftInfoX = marginLeft;
+      const rightInfoX = pageWidth - marginLeft - 200;
+      const lineGap = 16;
+
+      const leftInfo = [
+        `NIK : ${document.getElementById('nikDisplay').textContent}`,
+        `Nama : ${document.getElementById('nameDisplay').textContent}`,
+        `Jabatan : ${document.getElementById('positionDisplay').textContent}`,
+      ];
+      const rightInfo = [
+        `Bank : ${document.getElementById('bankDisplay').textContent}`,
+        `Transfer : ${document.getElementById('transferDisplay').textContent}`,
+        `Periode : ${document.getElementById('periodDisplay').textContent}`,
+      ];
+
+      leftInfo.forEach((text, i) => {
+        doc.text(text, leftInfoX, y + i * lineGap);
+      });
+      rightInfo.forEach((text, i) => {
+        doc.text(text, rightInfoX, y + i * lineGap);
+      });
+
+      y += leftInfo.length * lineGap + 10;
+
+      // Horizontal line
+      doc.setDrawColor(0);
+      doc.setLineWidth(0.5);
+      doc.line(marginLeft, y, pageWidth - marginLeft, y);
+      y += 10;
+
+      // Table header
+      doc.setFont('Roboto Mono', 'bold');
+      const col1X = marginLeft + 5;
+      const col2X = marginLeft + 260;
+      const col3X = marginLeft + 460;
+      doc.text('INFORMASI', col1X, y);
+      doc.text('PENDAPATAN', col2X, y);
+      doc.text('PENGURANGAN', col3X, y);
+      y += lineHeight;
+
+      // Table content
+      doc.setFont('Roboto Mono', 'normal');
+      const info1 = document.getElementById('info1Display').textContent;
+      const info2 = document.getElementById('info2Display').textContent;
+      doc.text(info1, col1X, y);
+      doc.text(info2, col1X, y + lineHeight);
+      y += lineHeight * 2;
+
+      // Income and deduction lines
+      const incomeLines = Array.from(document.getElementById('incomeList').children);
+      const deductionLines = Array.from(document.getElementById('deductionList').children);
+      const maxLines = Math.max(incomeLines.length, deductionLines.length);
+
+      for (let i = 0; i < maxLines; i++) {
+        if (i < incomeLines.length) {
+          const label = incomeLines[i].children[0].textContent;
+          const value = incomeLines[i].children[1].textContent;
+          doc.text(label, col2X, y);
+          const valWidth = doc.getTextWidth(value);
+          doc.text(value, col2X + 180 - valWidth, y);
+        }
+        if (i < deductionLines.length) {
+          const label = deductionLines[i].children[0].textContent;
+          const value = deductionLines[i].children[1].textContent;
+          doc.text(label, col3X, y);
+          const valWidth = doc.getTextWidth(value);
+          doc.text(value, col3X + 180 - valWidth, y);
+        }
+        y += lineHeight;
+        if (y > doc.internal.pageSize.getHeight() - 80) {
+          doc.addPage();
+          y = 40;
+        }
+      }
+
+      y += 10;
+      doc.setLineWidth(0.5);
+      doc.line(marginLeft, y, pageWidth - marginLeft, y);
+      y += 10;
+
+      // Totals row
+      doc.setFont('Roboto Mono', 'bold');
+      const totalPendapatanLabel = 'TOTAL PENDAPATAN';
+      const totalPendapatanValue = document.getElementById('totalIncomeDisplay').textContent;
+      const totalPenguranganLabel = 'TOTAL PENGURANGAN';
+      const totalPenguranganValue = document.getElementById('totalDeductionDisplay').textContent;
+
+      // Draw boxes for totals as in example
+      const boxHeight = 20;
+      const boxWidth = 120;
+      const boxY = y - 15;
+
+      // Left label box
+      doc.rect(marginLeft, boxY, 160, boxHeight);
+      doc.text(totalPendapatanLabel, marginLeft + 80 - doc.getTextWidth(totalPendapatanLabel)/2, y);
+
+      // Left value box
+      doc.rect(marginLeft + 160, boxY, boxWidth, boxHeight);
+      const valWidth1 = doc.getTextWidth(totalPendapatanValue);
+      doc.text(totalPendapatanValue, marginLeft + 160 + boxWidth - 10 - valWidth1, y);
+
+      // Right label box
+      const rightLabelX = marginLeft + 160 + boxWidth + 20;
+      doc.text(totalPenguranganLabel, rightLabelX + 90 - doc.getTextWidth(totalPenguranganLabel)/2, y);
+
+      // Right value box
+      const rightValueX = rightLabelX + 180;
+      doc.rect(rightValueX, boxY, boxWidth, boxHeight);
+      const valWidth2 = doc.getTextWidth(totalPenguranganValue);
+      doc.text(totalPenguranganValue, rightValueX + boxWidth - 10 - valWidth2, y);
+
+      y += boxHeight + 20;
+
+      // Pendapatan Bersih row
+      const netLabel = 'PENDAPATAN BERSIH';
+      const netValue = document.getElementById('netIncomeDisplay').textContent;
+
+      const netLabelWidth = doc.getTextWidth(netLabel);
+      const netBoxWidth = 120;
+      const netBoxHeight = 20;
+
+      // Label right aligned before box
+      const netLabelX = pageWidth - marginLeft - netBoxWidth - 20 - netLabelWidth;
+      doc.text(netLabel, netLabelX, y);
+
+      // Box for net income
+      const netBoxX = pageWidth - marginLeft - netBoxWidth;
+      doc.rect(netBoxX, y - netBoxHeight + 5, netBoxWidth, netBoxHeight);
+      const netValWidth = doc.getTextWidth(netValue);
+      doc.text(netValue, netBoxX + netBoxWidth - 10 - netValWidth, y);
+
+      y += netBoxHeight + 20;
+
+      // Footer text
+      doc.setFontSize(8);
+      doc.setFont('Roboto Mono', 'italic');
+      const footerText = '**Slip gaji ini dicetak menggunakan HR System; tidak membutuhkan stamp atau tanda tangan**';
+      const footerWidth = doc.getTextWidth(footerText);
+      doc.text(footerText, marginLeft, y);
+
+      doc.save('slip_gaji.pdf');
+    });
+  </script>
+</body>
+</html>
