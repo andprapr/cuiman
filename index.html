@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Slip Gaji Editable with Watermark</title>
+  <title>Slip Gaji Editable with Watermark Inside Slip</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
@@ -28,9 +28,9 @@
       filter: contrast(1.1) brightness(1);
       color: #222;
       position: relative;
-      overflow: hidden;
+      overflow: visible;
     }
-    /* Watermark style */
+    /* Watermark style inside slip container */
     .watermark {
       position: absolute;
       top: 50%;
@@ -44,6 +44,7 @@
       white-space: nowrap;
       z-index: 0;
       font-family: 'Roboto Mono', monospace;
+      mix-blend-mode: multiply;
     }
     /* Content above watermark */
     .content {
