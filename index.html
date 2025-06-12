@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Slip Gaji Editable with PDF Download</title>
+  <title>Slip Gaji Editable with Watermark</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
@@ -28,6 +28,27 @@
       filter: contrast(1.1) brightness(1);
       color: #222;
       position: relative;
+      overflow: hidden;
+    }
+    /* Watermark style */
+    .watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-30deg);
+      font-size: 120px;
+      font-weight: 900;
+      color: rgba(0, 0, 0, 0.05);
+      user-select: none;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 0;
+      font-family: 'Roboto Mono', monospace;
+    }
+    /* Content above watermark */
+    .content {
+      position: relative;
+      z-index: 1;
     }
     hr {
       border-color: #666;
@@ -197,78 +218,81 @@
 </head>
 <body>
   <div class="slip-container select-none" id="slip">
-    <!-- Header top -->
-    <div class="flex justify-between items-start border-b border-black pb-3 mb-3">
-      <div class="header-left">
-        <img src="" alt="Logo Perusahaan" id="logoInSlip" class="logo-in-slip" style="display:none;" />
-        <div class="company-info text-shadow">
-          <p id="companyName2Display">RUMAHFRESH</p>
-          <p id="companyAddress1Display">Jl. Jujur No. 9</p>
-          <p id="companyAddress2Display">Kedung Badak Baru - Bogor</p>
-          <p id="companyPhoneDisplay">Telp: 021-12345678</p>
+    <div class="watermark">PERUSAHAAN RESMI</div>
+    <div class="content">
+      <!-- Header top -->
+      <div class="flex justify-between items-start border-b border-black pb-3 mb-3">
+        <div class="header-left">
+          <img src="" alt="Logo Perusahaan" id="logoInSlip" class="logo-in-slip" style="display:none;" />
+          <div class="company-info text-shadow">
+            <p id="companyName2Display">RUMAHFRESH</p>
+            <p id="companyAddress1Display">Jl. Jujur No. 9</p>
+            <p id="companyAddress2Display">Kedung Badak Baru - Bogor</p>
+            <p id="companyPhoneDisplay">Telp: 021-12345678</p>
+          </div>
+        </div>
+        <div class="text-[14px] font-mono leading-[1] whitespace-nowrap text-shadow font-bold" id="confidentialDisplay">
+          PRIVATE &amp; CONFIDENTIAL
         </div>
       </div>
-      <div class="text-[14px] font-mono leading-[1] whitespace-nowrap text-shadow font-bold" id="confidentialDisplay">
-        PRIVATE &amp; CONFIDENTIAL
+
+      <!-- Info and bank -->
+      <div class="flex justify-between text-[10px] font-mono leading-[1.3] mb-4 text-shadow">
+        <div class="space-y-1">
+          <p><span class="inline-block w-[80px]">NIK</span>: <span id="nikDisplay">05212</span></p>
+          <p><span class="inline-block w-[80px]">Nama</span>: <span id="nameDisplay">Deddy Cobuzier</span></p>
+          <p><span class="inline-block w-[80px]">Jabatan</span>: <span id="positionDisplay">Marketing Manager</span></p>
+        </div>
+        <div class="space-y-1 text-right">
+          <p><span class="inline-block w-[80px]">Bank</span>: <span id="bankDisplay">Mandiri</span></p>
+          <p><span class="inline-block w-[80px]">Transfer</span>: <span id="transferDisplay">A/C 9000019288613</span></p>
+          <p><span class="inline-block w-[80px]">Periode</span>: <span id="periodDisplay">Oktober 2017</span></p>
+        </div>
       </div>
-    </div>
 
-    <!-- Info and bank -->
-    <div class="flex justify-between text-[10px] font-mono leading-[1.3] mb-4 text-shadow">
-      <div class="space-y-1">
-        <p><span class="inline-block w-[80px]">NIK</span>: <span id="nikDisplay">05212</span></p>
-        <p><span class="inline-block w-[80px]">Nama</span>: <span id="nameDisplay">Deddy Cobuzier</span></p>
-        <p><span class="inline-block w-[80px]">Jabatan</span>: <span id="positionDisplay">Marketing Manager</span></p>
+      <hr />
+
+      <!-- Table header -->
+      <div class="flex font-mono font-bold text-[10px] leading-[1.3] border-b border-black pb-2 mb-2 text-shadow">
+        <div class="w-1/3 border-r border-black pl-3">INFORMASI</div>
+        <div class="w-1/3 border-r border-black pl-3">PENDAPATAN</div>
+        <div class="w-1/3 pl-3">PENGURANGAN</div>
       </div>
-      <div class="space-y-1 text-right">
-        <p><span class="inline-block w-[80px]">Bank</span>: <span id="bankDisplay">Mandiri</span></p>
-        <p><span class="inline-block w-[80px]">Transfer</span>: <span id="transferDisplay">A/C 9000019288613</span></p>
-        <p><span class="inline-block w-[80px]">Periode</span>: <span id="periodDisplay">Oktober 2017</span></p>
+
+      <!-- Table content -->
+      <div class="flex font-mono text-[10px] leading-[1.3] text-shadow">
+        <div class="w-1/3 border-r border-black pl-3">
+          <p class="mb-2" id="info1Display">Year to date</p>
+          <p id="info2Display">Okt - 2017</p>
+        </div>
+        <div class="w-1/3 border-r border-black pl-3 space-y-1" id="incomeList">
+          <!-- Income lines inserted here -->
+        </div>
+        <div class="w-1/3 pl-3 space-y-1" id="deductionList">
+          <!-- Deduction lines inserted here -->
+        </div>
       </div>
-    </div>
 
-    <hr />
+      <hr class="my-4" />
 
-    <!-- Table header -->
-    <div class="flex font-mono font-bold text-[10px] leading-[1.3] border-b border-black pb-2 mb-2 text-shadow">
-      <div class="w-1/3 border-r border-black pl-3">INFORMASI</div>
-      <div class="w-1/3 border-r border-black pl-3">PENDAPATAN</div>
-      <div class="w-1/3 pl-3">PENGURANGAN</div>
-    </div>
-
-    <!-- Table content -->
-    <div class="flex font-mono text-[10px] leading-[1.3] text-shadow">
-      <div class="w-1/3 border-r border-black pl-3">
-        <p class="mb-2" id="info1Display">Year to date</p>
-        <p id="info2Display">Okt - 2017</p>
+      <!-- Totals row -->
+      <div class="totals-row">
+        <div class="totals-label border-r border-black">TOTAL PENDAPATAN</div>
+        <div class="totals-value border-r border-black" id="totalIncomeDisplay">10,784,640</div>
+        <div class="totals-label">TOTAL PENGURANGAN</div>
+        <div class="totals-value-left border border-black ml-3" id="totalDeductionDisplay">1,728,640</div>
       </div>
-      <div class="w-1/3 border-r border-black pl-3 space-y-1" id="incomeList">
-        <!-- Income lines inserted here -->
+
+      <!-- Pendapatan Bersih -->
+      <div class="net-income-row">
+        <div class="net-income-label">PENDAPATAN BERSIH</div>
+        <div class="net-income-value" id="netIncomeDisplay">8,856,000</div>
       </div>
-      <div class="w-1/3 pl-3 space-y-1" id="deductionList">
-        <!-- Deduction lines inserted here -->
-      </div>
+
+      <p class="text-[8px] font-mono italic mt-6 text-shadow">
+        **Slip gaji ini dicetak menggunakan HR System; tidak membutuhkan stamp atau tanda tangan**
+      </p>
     </div>
-
-    <hr class="my-4" />
-
-    <!-- Totals row -->
-    <div class="totals-row">
-      <div class="totals-label border-r border-black">TOTAL PENDAPATAN</div>
-      <div class="totals-value border-r border-black" id="totalIncomeDisplay">10,784,640</div>
-      <div class="totals-label">TOTAL PENGURANGAN</div>
-      <div class="totals-value-left border border-black ml-3" id="totalDeductionDisplay">1,728,640</div>
-    </div>
-
-    <!-- Pendapatan Bersih -->
-    <div class="net-income-row">
-      <div class="net-income-label">PENDAPATAN BERSIH</div>
-      <div class="net-income-value" id="netIncomeDisplay">8,856,000</div>
-    </div>
-
-    <p class="text-[8px] font-mono italic mt-6 text-shadow">
-      **Slip gaji ini dicetak menggunakan HR System; tidak membutuhkan stamp atau tanda tangan**
-    </p>
   </div>
 
   <form class="form-section" id="inputForm" autocomplete="off">
